@@ -54,7 +54,7 @@ const Navbar = () => {
             window.removeEventListener('scroll', handleScroll);
         };
     }, [scrolled]);
-    
+
     // Scroll to top on page refresh
     useEffect(() => {
         // Check if this is a page load/refresh (not just a component re-render)
@@ -65,10 +65,10 @@ const Navbar = () => {
                 behavior: 'instant' // Use 'smooth' for animated scroll
             });
         };
-        
+
         // Run on component mount which includes page refresh
         scrollToTop();
-        
+
         // Handle browser history navigation
         window.addEventListener('pageshow', (event) => {
             // The persisted property is true if the page was cached by the browser
@@ -76,7 +76,7 @@ const Navbar = () => {
                 scrollToTop();
             }
         });
-        
+
         return () => {
             window.removeEventListener('pageshow', scrollToTop);
         };
@@ -124,48 +124,49 @@ const Navbar = () => {
                                 alignItems: 'center'
                             }}
                         >
-                            <Box sx={{display:'flex',gap:1,alignItems:'center'}}>
+                            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
                                 <Code className="h-6 w-6 text-[#B91C1C]" />
                                 <Typography color='secondary' variant="h6">Optim Alze</Typography>
                             </Box>
                         </Box>
 
                         {/* Desktop Menu */}
-                        {!isMobile && (
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                                <List sx={{ display: 'flex' }}>
-                                    {
-                                        navLinks?.map((link) => (
-                                            <ListItemButton 
-                                                key={link.name} 
-                                                href={link.href}
-                                                onClick={() => handleNavClick(link.href)}
-                                                sx={{
-                                                    color: activeSection === link.href.substring(1) ? '#B91C1C' : 'inherit',
-                                                    fontWeight: activeSection === link.href.substring(1) ? 600 : 400,
-                                                    '&:hover': {
-                                                        color: '#B91C1C'
-                                                    }
-                                                }}
-                                            >
-                                                {link.name}
-                                            </ListItemButton>
-                                        ))
-                                    }
-                                </List>
-                            </Box>
-                        )}
+                        {/* {!isMobile && ( */}
+                        <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 4 }}>
+                            <List sx={{ display: 'flex' }}>
+                                {
+                                    navLinks?.map((link) => (
+                                        <ListItemButton
+                                            key={link.name}
+                                            href={link.href}
+                                            onClick={() => handleNavClick(link.href)}
+                                            sx={{
+                                                color: activeSection === link.href.substring(1) ? '#B91C1C' : 'inherit',
+                                                fontWeight: activeSection === link.href.substring(1) ? 600 : 400,
+                                                '&:hover': {
+                                                    color: '#B91C1C'
+                                                }
+                                            }}
+                                        >
+                                            {link.name}
+                                        </ListItemButton>
+                                    ))
+                                }
+                            </List>
+                        </Box>
+                        {/* )} */}
 
                         {/* Mobile Hamburger/Cross Menu Toggle */}
-                        {isMobile && (
+                        {/* {isMobile && ( */}
                             <IconButton
                                 onClick={toggleMenu}
                                 color="primary"
                                 aria-label={menuOpen ? "close menu" : "open menu"}
+                                sx={{ display: { xs: 'block', md: 'none' } }}
                             >
                                 {menuOpen ? <X size={24} /> : <Menu size={24} />}
                             </IconButton>
-                        )}
+                        {/* )} */}
                     </Toolbar>
                 </Container>
             </AppBar>
@@ -205,9 +206,9 @@ const Navbar = () => {
                                         }
                                     }}
                                 >
-                                    <Typography 
-                                        variant="body1" 
-                                        sx={{ 
+                                    <Typography
+                                        variant="body1"
+                                        sx={{
                                             fontSize: '18px',
                                             color: 'inherit'
                                         }}
