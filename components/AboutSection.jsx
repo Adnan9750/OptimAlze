@@ -115,7 +115,7 @@ const AboutSection = () => {
                                 <Grid container spacing={4}>
                                     {
                                         aboutData.map((item) => (
-                                            <Grid key={item.id} item size={6}>
+                                            <Grid key={item.id} item size={{ xs: 12, sm: 6 }}>
                                                 <Box className="flex gap-3">
                                                     <Box className="shrink-0 p-2 rounded-md bg-slate-100">
                                                         {item.icon}

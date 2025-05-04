@@ -120,7 +120,7 @@ const ContactSection = () => {
 
                                                 <Grid item size={12}>
                                                     <Button
-                                                        type="submit"
+                                                        // type="submit"
                                                         sx={{ color: '#fff', my: 1 }}
                                                         className="w-full bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white"
                                                     >
