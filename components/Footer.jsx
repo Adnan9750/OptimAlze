@@ -13,7 +13,7 @@ const Footer = () => {
 
     return (
         <>
-            <footer className="pb-24 pt-16 bg-[#F5F5F580]">
+            <footer className="py-24 bg-[#F5F5F580]">
                 <Container maxWidth='lg'>
                     <Grid container spacing={4}>
                         <Grid item size={{ xs: 12, md: 3 }}>

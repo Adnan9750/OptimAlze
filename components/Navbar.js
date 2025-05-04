@@ -5,7 +5,6 @@ import {
     AppBar,
     Toolbar,
     Typography,
-    Button,
     Box,
     IconButton,
     List,
@@ -13,22 +12,41 @@ import {
     useMediaQuery,
     useTheme,
     Container,
-    Collapse,
 } from '@mui/material';
-import { Menu, X } from 'lucide-react';
+import { Code, Menu, X } from 'lucide-react';
 
 const Navbar = () => {
     const [scrolled, setScrolled] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
+    const [activeSection, setActiveSection] = useState('home');
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
     useEffect(() => {
         const handleScroll = () => {
+            // Handle the scrolled state for navbar background
             const isScrolled = window.scrollY > 20;
             if (isScrolled !== scrolled) {
                 setScrolled(isScrolled);
             }
+
+            // Determine active section based on scroll position
+            const sections = navLinks.map(link => link.href.substring(1));
+            let currentSection = 'home';
+
+            for (const section of sections) {
+                const element = document.getElementById(section);
+                if (element) {
+                    const rect = element.getBoundingClientRect();
+                    // If the top of the section is near the top of the viewport (with some tolerance)
+                    if (rect.top <= 150 && rect.bottom >= 150) {
+                        currentSection = section;
+                        break;
+                    }
+                }
+            }
+
+            setActiveSection(currentSection);
         };
 
         window.addEventListener('scroll', handleScroll);
@@ -36,6 +54,33 @@ const Navbar = () => {
             window.removeEventListener('scroll', handleScroll);
         };
     }, [scrolled]);
+    
+    // Scroll to top on page refresh
+    useEffect(() => {
+        // Check if this is a page load/refresh (not just a component re-render)
+        // We can use performance.navigation in older browsers or pageshow event
+        const scrollToTop = () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'instant' // Use 'smooth' for animated scroll
+            });
+        };
+        
+        // Run on component mount which includes page refresh
+        scrollToTop();
+        
+        // Handle browser history navigation
+        window.addEventListener('pageshow', (event) => {
+            // The persisted property is true if the page was cached by the browser
+            if (event.persisted) {
+                scrollToTop();
+            }
+        });
+        
+        return () => {
+            window.removeEventListener('pageshow', scrollToTop);
+        };
+    }, []);
 
     const navLinks = [
         { name: 'Home', href: '#home' },
@@ -49,12 +94,20 @@ const Navbar = () => {
         setMenuOpen(!menuOpen);
     };
 
+    // Handle click on nav items to update active section
+    const handleNavClick = (sectionId) => {
+        setActiveSection(sectionId.substring(1)); // Remove the # from href
+        if (menuOpen) {
+            toggleMenu();
+        }
+    };
+
     return (
         <>
             <AppBar
                 position="fixed"
                 color="transparent"
-                elevation={scrolled ? 4 : 0}
+                elevation={scrolled ? 1 : 0}
                 sx={{
                     bgcolor: scrolled ? 'white' : 'white',
                     transition: 'all 0.3s ease-in-out',
@@ -71,7 +124,10 @@ const Navbar = () => {
                                 alignItems: 'center'
                             }}
                         >
-                            <Typography color='primary' variant="h6">LOGO</Typography>
+                            <Box sx={{display:'flex',gap:1,alignItems:'center'}}>
+                                <Code className="h-6 w-6 text-[#B91C1C]" />
+                                <Typography color='secondary' variant="h6">Optim Alze</Typography>
+                            </Box>
                         </Box>
 
                         {/* Desktop Menu */}
@@ -80,7 +136,18 @@ const Navbar = () => {
                                 <List sx={{ display: 'flex' }}>
                                     {
                                         navLinks?.map((link) => (
-                                            <ListItemButton key={link.name} href={link.href}>
+                                            <ListItemButton 
+                                                key={link.name} 
+                                                href={link.href}
+                                                onClick={() => handleNavClick(link.href)}
+                                                sx={{
+                                                    color: activeSection === link.href.substring(1) ? '#B91C1C' : 'inherit',
+                                                    fontWeight: activeSection === link.href.substring(1) ? 600 : 400,
+                                                    '&:hover': {
+                                                        color: '#B91C1C'
+                                                    }
+                                                }}
+                                            >
                                                 {link.name}
                                             </ListItemButton>
                                         ))
@@ -122,25 +189,37 @@ const Navbar = () => {
                 }}
             >
                 <Container maxWidth="xl">
-                    <Box sx={{ display:'flex',justifyContent:'center',alignItems:'center' }}>
-                        <List sx={{display:'flex',flexDirection:'column',gap:2}}>
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <List sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                             {navLinks.map((link) => (
                                 <ListItemButton
                                     key={link.name}
                                     href={link.href}
-                                    onClick={toggleMenu}
+                                    onClick={() => handleNavClick(link.href)}
                                     sx={{
                                         py: 2,
+                                        color: activeSection === link.href.substring(1) ? '#B91C1C' : 'inherit',
+                                        fontWeight: activeSection === link.href.substring(1) ? 600 : 400,
+                                        '&:hover': {
+                                            color: '#B91C1C'
+                                        }
                                     }}
                                 >
-                                    <Typography variant="body" sx={{fontSize:'18px'}}>{link.name}</Typography>
+                                    <Typography 
+                                        variant="body1" 
+                                        sx={{ 
+                                            fontSize: '18px',
+                                            color: 'inherit'
+                                        }}
+                                    >
+                                        {link.name}
+                                    </Typography>
                                 </ListItemButton>
                             ))}
                         </List>
                     </Box>
                 </Container>
             </Box>
-
         </>
     );
 };
